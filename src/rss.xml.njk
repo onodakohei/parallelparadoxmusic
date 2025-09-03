@@ -1,0 +1,21 @@
+---
+permalink: /rss.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>{{ site.name }}</title>
+    <link>{{ site.domain }}</link>
+    <description>{{ site.description }}</description>
+    {% for item in collections.releases | reverse %}
+    <item>
+      <title>{{ item.data.title }}</title>
+      <link>{{ site.domain }}{{ item.url }}</link>
+      <pubDate>{{ item.date | date }}</pubDate>
+      <guid>{{ site.domain }}{{ item.url }}</guid>
+      <description>{{ item.data.description or item.data.title }}</description>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>

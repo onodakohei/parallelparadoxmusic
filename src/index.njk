@@ -1,0 +1,19 @@
+---
+layout: layouts/page.njk
+title: Parallel Paradox Music
+description: New releases, links, and updates.
+---
+<section>
+  <h2 id="releases">Latest Releases</h2>
+  <div class="grid">
+    {% for r in collections.releases | reverse %}
+    <article class="card">
+      <a href="{{ r.url }}">
+        {% if r.data.cover %}<img src="{{ r.data.cover }}" alt="{{ r.data.title }} cover">{% endif %}
+        <h3>{{ r.data.title }}</h3>
+        <p class="muted">{{ r.date | year }}</p>
+      </a>
+    </article>
+    {% endfor %}
+  </div>
+</section>
