@@ -3,8 +3,8 @@
 <title>{% if title %}{{ title }} · {% endif %}{{ site.name }}</title>
 <meta name="description" content="{{ description or site.description }}">
 <link rel="canonical" href="{{ (site.domain + page.url) | replace('//','/') }}">
-<link href="/assets/css/main.css" rel="stylesheet">
-<script src="/assets/js/playlist-manager.js" defer></script>
+<link href="{{ '/assets/css/main.css' | url }}" rel="stylesheet">
+<script src="{{ '/assets/js/playlist-manager.js' | url }}" defer></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ title or site.name }}">
 <meta property="og:description" content="{{ description or site.description }}">
