@@ -5,6 +5,7 @@
 <link rel="canonical" href="{{ (site.domain + page.url) | replace('//','/') }}">
 <link href="{{ '/assets/css/main.css' | url }}" rel="stylesheet">
 <script src="{{ '/assets/js/playlist-manager.js' | url }}" defer></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ title or site.name }}">
 <meta property="og:description" content="{{ description or site.description }}">
@@ -192,9 +193,56 @@ function playRandomAudio(playlistId, title) {
     document.body.appendChild(hiddenPlayer);
   }
 
-  // 音声再生用のURLを設定（音声のみ、自動再生）
-  const audioUrl = `https://www.youtube.com/embed/${randomVideo.id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&loop=1&playlist=${randomVideo.id}&enablejsapi=1`;
-  hiddenPlayer.src = audioUrl;
+  // YouTube APIが利用可能な場合、状態変更を監視
+  if (typeof YT !== 'undefined' && YT.Player) {
+    // 既存のプレイヤーを削除
+    if (hiddenPlayer._player) {
+      hiddenPlayer._player.destroy();
+    }
+    
+    // 新しいYouTubeプレイヤーを作成
+    hiddenPlayer._player = new YT.Player(hiddenPlayer, {
+      videoId: randomVideo.id,
+      playerVars: {
+        autoplay: 1,
+        modestbranding: 1,
+        rel: 0,
+        controls: 0,
+        disablekb: 1,
+        fs: 0,
+        iv_load_policy: 3,
+        cc_load_policy: 0,
+        autohide: 1,
+        loop: 0,
+        enablejsapi: 1
+      },
+      events: {
+        'onStateChange': function(event) {
+          // 曲が終了した場合（状態: 0 = 終了）
+          if (event.data === 0) {
+            console.log('YouTube曲が終了しました。次の曲を再生します。');
+            // 現在のプレイリストから次の曲を再生
+            const currentPlaylistId = getCurrentPlaylistId();
+            const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+            playRandomAudio(currentPlaylistId, currentPlaylistName);
+          }
+        }
+      }
+    });
+  } else {
+    // YouTube APIが利用できない場合、従来のiframe方式
+    const audioUrl = `https://www.youtube.com/embed/${randomVideo.id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&loop=0&enablejsapi=1`;
+    hiddenPlayer.src = audioUrl;
+    
+    // iframe方式でも曲終了を検知（YouTubeの埋め込みプレイヤーはendedイベントを発火しないため、タイマーで監視）
+    const videoDuration = 180; // 平均的な曲の長さ（秒）
+    setTimeout(() => {
+      console.log('タイマーによる曲終了検知。次の曲を再生します。');
+      const currentPlaylistId = getCurrentPlaylistId();
+      const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+      playRandomAudio(currentPlaylistId, currentPlaylistName);
+    }, (videoDuration + 5) * 1000); // 5秒の余裕を持たせる
+  }
 
   // 背景を更新
   updateBackgroundThumbnail(randomVideo.id, randomVideo.thumbnail);
@@ -213,6 +261,15 @@ function playRandomAudio(playlistId, title) {
   hiddenPlayer.onerror = function() {
     console.error('隠しプレイヤー読み込みエラー');
   };
+
+  // 曲終了時のイベントリスナーを設定
+  hiddenPlayer.addEventListener('ended', function() {
+    console.log('曲が終了しました。次の曲を再生します。');
+    // 現在のプレイリストから次の曲を再生
+    const currentPlaylistId = getCurrentPlaylistId();
+    const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+    playRandomAudio(currentPlaylistId, currentPlaylistName);
+  });
 }
 
 // 曲名を更新する
