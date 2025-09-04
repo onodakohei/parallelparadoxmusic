@@ -1,9 +1,116 @@
 :root { --max: 1100px; }
 * { box-sizing: border-box; }
-body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; line-height:1.6; }
-.container { max-width: var(--max); margin: 0 auto; padding: 24px; }
-.site-header, .site-footer { padding: 16px 24px; border-bottom: 1px solid #eee; }
-.site-footer { border-top: 1px solid #eee; border-bottom: 0; }
+
+/* フッターを下部に固定するためのレイアウト */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body { 
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif; 
+  line-height:1.6; 
+  background-color: #000000;
+  color: #ffffff;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container { 
+  max-width: var(--max); 
+  margin: 0 auto; 
+  padding: 24px; 
+  flex: 1;
+}
+
+main#content {
+  flex: 1;
+  padding-bottom: 0;
+}
+
+.site-header, .site-footer { padding: 24px; text-align: center; }
+.site-header { 
+  padding-bottom: 2rem;
+}
+.site-footer { 
+  margin-top: auto;
+  padding-top: 3rem;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.playlist-navigation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.playlist-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60px;
+}
+
+.current-song {
+  font-size: 0.9rem;
+  color: #cccccc;
+  margin-bottom: 4px;
+  font-weight: 400;
+  min-height: 1.2em;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.playlist-name {
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.btn-nav {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-align: left;
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+}
+
+.btn-nav:first-of-type {
+  left: 20px;
+}
+
+.btn-nav:last-of-type {
+  right: 20px;
+}
+
+.footer-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 .logo { font-weight: 700; text-decoration: none; color: inherit; }
 .nav ul { list-style: none; display:flex; gap:16px; margin:0; padding:0; }
 .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap:16px; }
@@ -12,3 +119,382 @@ body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Hir
 .cover { width:100%; max-width:640px; border-radius:12px; }
 .muted { color:#666; font-size: 0.9rem; }
 .lead { color:#444; }
+
+/* YouTubeプレイヤーのスタイル */
+.youtube-player {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.player-container {
+  max-width: 100%;
+}
+
+.player-container iframe {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.player-controls {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  background: transparent;
+  color: #ffffff;
+}
+
+.btn-primary {
+  background: transparent;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: transparent;
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #ffffff;
+}
+
+.btn-secondary:hover {
+  background: transparent;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: transparent;
+  color: #ffffff;
+  transform: translateY(-3px);
+  font-size: 2rem;
+}
+
+.btn-danger:hover {
+  background: transparent;
+  color: #ffffff;
+  transform: translateY(-4px);
+}
+
+/* アクティブボタンのスタイル */
+.btn-active {
+  background: #28a745 !important;
+  color: white !important;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-active:hover {
+  background: #218838 !important;
+  transform: scale(1.05) translateY(-1px);
+}
+
+/* 音声制御ボタンのスタイル */
+.audio-controls {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.audio-controls .btn {
+  padding: 8px 16px;
+  font-size: 1.5rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.audio-controls .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 音声重視モードのスタイル */
+iframe[style*="height: 166px"] {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+
+/* プレイリストグリッドのスタイル */
+.playlist-links {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.playlist-links h4 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.playlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.playlist-item {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  text-align: center;
+}
+
+.playlist-item h5 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.playlist-item p {
+  margin: 0 0 1rem 0;
+  color: #666;
+}
+
+/* リリースアクションセクション */
+.releases-actions {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+}
+
+.releases-actions h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* クイックリンクセクション */
+.quick-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+/* 動的背景のスタイル */
+.dynamic-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.dynamic-background::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* 背景がアクティブな時のコンテンツ調整 */
+body.has-dynamic-background {
+  position: relative;
+}
+
+body.has-dynamic-background .container {
+  position: relative;
+  z-index: 2;
+}
+
+
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .player-controls,
+  .action-buttons,
+  .quick-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .btn {
+    width: auto;
+    text-align: center;
+    min-width: 60px;
+  }
+  
+  .audio-controls .btn {
+    min-width: 80px;
+  }
+}
+
+/* プレイリスト選択モーダル */
+.playlist-selector {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.playlist-selector.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playlist-selector-content {
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 200px;
+  width: auto;
+  box-shadow: none;
+}
+
+.playlist-list {
+  padding: 0;
+}
+
+.playlist-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.playlist-item:last-child {
+  margin-bottom: 0;
+}
+
+.playlist-item .playlist-name {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+/* プレイリスト名のホバー効果 */
+.playlist-name {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.playlist-name:hover {
+  color: #007acc !important;
+}
+
+/* ヘッダーリンク */
+.header-links {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.header-links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.header-links a:hover {
+  color: #007acc;
+}
+
+/* リンク表示モーダル */
+.links-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  z-index: 1000;
+}
+
+.links-modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.links-modal-content {
+  background-color: transparent;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 200px;
+  width: auto;
+  box-shadow: none;
+}
+
+.links-list {
+  padding: 0;
+}
+
+.link-item {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  border: none;
+  background-color: transparent;
+}
+
+.link-item:last-child {
+  margin-bottom: 0;
+}
+
+.link-item a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.link-item .link-name {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.link-item:hover .link-name {
+  color: #007acc;
+}

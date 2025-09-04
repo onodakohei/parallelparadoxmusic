@@ -12,7 +12,7 @@ eleventyExcludeFromCollections: true
     <item>
       <title>{{ item.data.title }}</title>
       <link>{{ site.domain }}{{ item.url }}</link>
-      <pubDate>{{ item.date | date }}</pubDate>
+      <pubDate>{{ item.date | iso }}</pubDate>
       <guid>{{ site.domain }}{{ item.url }}</guid>
       <description>{{ item.data.description or item.data.title }}</description>
     </item>

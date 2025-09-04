@@ -1,5 +1,0 @@
-{
-  "tags": "releases",
-  "layout": "layouts/release.njk",
-  "permalink": "/releases/{{ page.fileSlug }}/index.html"
-}

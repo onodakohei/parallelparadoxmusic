@@ -1,3 +1,57 @@
 <footer class="site-footer">
-  <p>© {{ site.name }} {{ "now" | year }}</p>
-</footer>
+  <div class="footer-content">
+    <div class="playlist-navigation">
+      <button class="btn btn-nav" onclick="previousPlaylist()">
+        ◀
+      </button>
+      <div class="playlist-info">
+        <div class="current-song" id="current-song"></div>
+                                                         <div class="playlist-name" id="current-playlist" onclick="showPlaylistSelector()">ALL</div>
+      </div>
+      <button class="btn btn-nav" onclick="nextPlaylist()">
+        ▶
+      </button>
+    </div>
+    <div class="footer-buttons">
+      <button class="btn btn-secondary" onclick="playCurrentPlaylist()">
+        ▶
+      </button>
+      <button class="btn btn-danger" onclick="stopAudio()">
+        ■
+      </button>
+    </div>
+    <p>© {{ site.name }} {{ "now" | year }}</p>
+  </div>
+  </footer>
+
+  <!-- プレイリスト選択モーダル -->
+  <div id="playlist-selector" class="playlist-selector">
+    <div class="playlist-selector-content">
+      <div class="playlist-list">
+        <div class="playlist-item" onclick="selectPlaylist(0)">
+          <span class="playlist-name">ALL</span>
+        </div>
+        <div class="playlist-item" onclick="selectPlaylist(1)">
+          <span class="playlist-name">POPS PPM1</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- リンク表示モーダル -->
+  <div id="links-modal" class="links-modal">
+    <div class="links-modal-content">
+      <div class="links-list">
+        <div class="link-item">
+          <a href="https://www.youtube.com/@parallelparadoxmusic" target="_blank" rel="noopener noreferrer">
+            <span class="link-name">YouTube</span>
+          </a>
+        </div>
+        <div class="link-item">
+          <a href="https://suno.com/@parallelparadoxmusic" target="_blank" rel="noopener noreferrer">
+            <span class="link-name">Suno</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
