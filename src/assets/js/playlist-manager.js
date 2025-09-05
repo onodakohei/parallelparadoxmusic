@@ -9,6 +9,7 @@ async function loadData() {
     
     // GitHub Pages用のパスを動的に決定
     const basePath = window.location.hostname === 'localhost' ? '' : '/parallelparadoxmusic';
+    console.log('Base path determined:', basePath);
     
     const [playlistsResponse, songsResponse] = await Promise.all([
       fetch(`${basePath}/playlists.json?v=${timestamp}`), // Add timestamp to URL
@@ -57,8 +58,14 @@ function previousPlaylist() {
 }
 
 function updatePlaylistDisplay() {
+  // データが読み込まれていない場合は何もしない
+  if (!PLAYLISTS || PLAYLISTS.length === 0) {
+    console.warn('プレイリストデータが読み込まれていません');
+    return;
+  }
+  
   const playlistInfo = document.getElementById('current-playlist');
-  if (playlistInfo) {
+  if (playlistInfo && PLAYLISTS[currentPlaylistIndex]) {
     playlistInfo.textContent = PLAYLISTS[currentPlaylistIndex].name;
   }
   
@@ -70,7 +77,7 @@ function updatePlaylistDisplay() {
   
   // プレイリスト切り替え時に自動再生（安全な方法で）
   const currentPlaylistId = getCurrentPlaylistId();
-  console.log('プレイリスト切り替え:', PLAYLISTS[currentPlaylistIndex].name, 'ID:', currentPlaylistId);
+  console.log('プレイリスト切り替え:', PLAYLISTS[currentPlaylistIndex]?.name, 'ID:', currentPlaylistId);
   
   // データが正常に読み込まれている場合のみ自動再生
   if (PLAYLISTS.length > 0 && SONGS.length > 0 && typeof playRandomAudio === 'function' && !isAutoPlaying) {
@@ -78,7 +85,7 @@ function updatePlaylistDisplay() {
     
     // 少し遅延させて安全に実行
     setTimeout(() => {
-      playRandomAudio(currentPlaylistId, PLAYLISTS[currentPlaylistIndex].name);
+      playRandomAudio(currentPlaylistId, PLAYLISTS[currentPlaylistIndex]?.name);
       isAutoPlaying = false; // フラグをリセット
     }, 100);
   }
@@ -414,9 +421,15 @@ function initializePlaylistManager() {
 
 // 現在のプレイリストから再生
 function playCurrentPlaylist() {
+  // データが読み込まれていない場合は何もしない
+  if (!PLAYLISTS || PLAYLISTS.length === 0) {
+    console.warn('プレイリストデータが読み込まれていません');
+    return;
+  }
+  
   // 現在のプレイリストIDを取得
   const currentPlaylistId = getCurrentPlaylistId();
-  const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+  const currentPlaylistName = PLAYLISTS[currentPlaylistIndex]?.name;
   
   console.log('現在のプレイリストから再生:', currentPlaylistId, currentPlaylistName);
   
