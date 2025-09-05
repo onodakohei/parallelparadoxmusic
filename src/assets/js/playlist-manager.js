@@ -371,3 +371,156 @@ document.addEventListener('DOMContentLoaded', async function() {
     }, 200); // 初期化時は少し長めの遅延
   }
 });
+
+// 現在のプレイリストから再生
+function playCurrentPlaylist() {
+  // 現在のプレイリストIDを取得
+  const currentPlaylistId = getCurrentPlaylistId();
+  const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+  
+  console.log('現在のプレイリストから再生:', currentPlaylistId, currentPlaylistName);
+  
+  // playRandomAudioを呼び出し
+  playRandomAudio(currentPlaylistId, currentPlaylistName);
+}
+
+// トップページ用：音声のみランダム再生（プレイヤーは表示しない）
+function playRandomAudio(playlistId, title) {
+  // playlistManagerが利用可能になるまで待つ
+  if (typeof playlistManager === 'undefined' || !playlistManager) {
+    console.log('playlistManagerが利用できません。1秒後に再試行します...');
+    setTimeout(() => playRandomAudio(playlistId, title), 1000);
+    return;
+  }
+  
+  // 渡されたプレイリストIDを使用（getCurrentPlaylistId()は使用しない）
+  console.log('playRandomAudio 呼び出し:', playlistId, title);
+  
+  // 手動プレイリストからランダムな動画を取得
+  const randomVideo = playlistManager.getRandomVideo(playlistId);
+  if (!randomVideo) {
+    console.error('動画が見つかりません');
+    return;
+  }
+
+  console.log('ランダム動画取得:', randomVideo);
+
+  // 音声再生用の隠しプレイヤーを作成
+  let hiddenPlayer = document.getElementById('hidden-audio-player');
+  if (!hiddenPlayer) {
+    hiddenPlayer = document.createElement('iframe');
+    hiddenPlayer.id = 'hidden-audio-player';
+    hiddenPlayer.style.position = 'absolute';
+    hiddenPlayer.style.left = '-9999px';
+    hiddenPlayer.style.top = '-9999px';
+    hiddenPlayer.style.width = '1px';
+    hiddenPlayer.style.height = '1px';
+    hiddenPlayer.style.opacity = '0';
+    hiddenPlayer.style.pointerEvents = 'none';
+    hiddenPlayer.allow = 'autoplay; encrypted-media';
+    document.body.appendChild(hiddenPlayer);
+  }
+
+    // 従来のiframe方式で再生（音声が出ていた方式）
+  console.log('iframe方式で再生開始');
+  const audioUrl = `https://www.youtube.com/embed/${randomVideo.id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&loop=0&mute=0`;
+  console.log('iframe URL:', audioUrl);
+  hiddenPlayer.src = audioUrl;
+  
+  // iframe方式で曲終了を検知（タイマーで監視）
+  const videoDuration = 180; // 平均的な曲の長さ（秒）
+  setTimeout(() => {
+    console.log('タイマーによる曲終了検知。次の曲を再生します。');
+    const currentPlaylistId = getCurrentPlaylistId();
+    const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+    playRandomAudio(currentPlaylistId, currentPlaylistName);
+  }, (videoDuration + 5) * 1000); // 5秒の余裕を持たせる
+
+  // 背景を更新
+  updateBackgroundThumbnail(randomVideo.id, randomVideo.thumbnail);
+
+  console.log('音声再生開始:', randomVideo.title);
+  
+  // 曲名を更新
+  updateCurrentSong(randomVideo.title);
+  
+  // プレイヤーの読み込み完了を監視
+  hiddenPlayer.onload = function() {
+    console.log('隠しプレイヤー読み込み完了');
+  };
+  
+  // エラーハンドリング
+  hiddenPlayer.onerror = function() {
+    console.error('隠しプレイヤー読み込みエラー');
+  };
+
+  // 曲終了時のイベントリスナーを設定
+  hiddenPlayer.addEventListener('ended', function() {
+    console.log('曲が終了しました。次の曲を再生します。');
+    // 現在のプレイリストから次の曲を再生
+    const currentPlaylistId = getCurrentPlaylistId();
+    const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
+    playRandomAudio(currentPlaylistId, currentPlaylistName);
+  });
+}
+
+// 曲名を更新する
+function updateCurrentSong(songTitle) {
+  const currentSongElement = document.getElementById('current-song');
+  if (currentSongElement) {
+    currentSongElement.textContent = songTitle;
+    console.log('曲名を更新しました:', songTitle);
+  } else {
+    console.error('current-song要素が見つかりません');
+  }
+}
+
+// 音声を停止する
+function stopAudio() {
+  const hiddenPlayer = document.getElementById('hidden-audio-player');
+  if (hiddenPlayer) {
+    hiddenPlayer.src = '';
+    console.log('音声停止');
+  }
+  
+  // 背景もリセット
+  resetBackground();
+}
+
+// 背景を動画サムネイルに更新
+function updateBackgroundThumbnail(videoId, thumbnailUrl) {
+  // 背景要素を作成または更新
+  let backgroundElement = document.getElementById('dynamic-background');
+  if (!backgroundElement) {
+    backgroundElement = document.createElement('div');
+    backgroundElement.id = 'dynamic-background';
+    backgroundElement.className = 'dynamic-background';
+    document.body.appendChild(backgroundElement);
+  }
+  
+  // 背景画像を設定
+  backgroundElement.style.backgroundImage = `url(${thumbnailUrl})`;
+  
+  // フェードイン効果
+  backgroundElement.style.opacity = '0';
+  setTimeout(() => {
+    backgroundElement.style.opacity = '1';
+  }, 100);
+}
+
+// 背景を元に戻す
+function resetBackground() {
+  const backgroundElement = document.getElementById('dynamic-background');
+  if (backgroundElement) {
+    backgroundElement.style.opacity = '0';
+    setTimeout(() => {
+      backgroundElement.remove();
+    }, 500);
+  }
+
+  // 隠しプレイヤーも停止
+  const hiddenPlayer = document.getElementById('hidden-audio-player');
+  if (hiddenPlayer) {
+    hiddenPlayer.src = '';
+  }
+}
