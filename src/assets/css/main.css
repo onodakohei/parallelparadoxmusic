@@ -739,3 +739,12 @@ body.has-dynamic-background .container {
     min-width: 2.5rem;
   }
 }
+
+/* Version info styling */
+.version-info {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 0.5rem;
+  text-align: center;
+  font-family: 'Courier New', monospace;
+}
