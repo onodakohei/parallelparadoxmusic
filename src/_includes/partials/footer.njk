@@ -24,16 +24,18 @@
   </div>
   </footer>
 
+  <!-- プレイリスト名表示オーバーレイ -->
+  <div id="playlist-overlay" class="playlist-overlay">
+    <div class="playlist-overlay-content">
+      <div class="playlist-overlay-name" id="playlist-overlay-name"></div>
+    </div>
+  </div>
+
   <!-- プレイリスト選択モーダル -->
   <div id="playlist-selector" class="playlist-selector">
     <div class="playlist-selector-content">
-      <div class="playlist-list">
-        <div class="playlist-item" onclick="selectPlaylist(0)">
-          <span class="playlist-name">ALL</span>
-        </div>
-        <div class="playlist-item" onclick="selectPlaylist(1)">
-          <span class="playlist-name">POPS PPM1</span>
-        </div>
+      <div class="playlist-list" id="playlist-list">
+        <!-- プレイリスト一覧はJavaScriptで動的に生成されます -->
       </div>
     </div>
   </div>

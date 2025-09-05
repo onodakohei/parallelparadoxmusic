@@ -9,5 +9,89 @@
     {{ content | safe }}
   </main>
   {% include "partials/footer.njk" %}
+  
+  <!-- About Modal -->
+  <div id="aboutModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close" onclick="closeAboutModal()">&times;</span>
+      <div class="about-section">
+        <h1>About</h1>
+        <p class="about-description">"Parallel Paradox Music" is a project that explores generative tools to produce music in diverse styles.</p>
+        
+        <div class="about-content">
+          <div class="links-section">
+            <div class="links-grid">
+              {% if site.social.youtube %}
+              <a href="{{ site.social.youtube }}" class="link-item" target="_blank" rel="noopener">
+                <div class="link-icon">
+                  <img src="/assets/img/youtube.com-favicon-large.ico" alt="YouTube" class="logo-icon">
+                </div>
+                <div class="link-info">
+                  <div class="link-title">YouTube</div>
+                  <div class="link-url">{{ site.social.youtube | replace("https://www.", "") | replace("https://", "") }}</div>
+                </div>
+              </a>
+              {% endif %}
+              
+              {% if site.social.suno %}
+              <a href="{{ site.social.suno }}" class="link-item" target="_blank" rel="noopener">
+                <div class="link-icon">
+                  <img src="/assets/img/suno.com-favicon-large.ico" alt="Suno" class="logo-icon">
+                </div>
+                <div class="link-info">
+                  <div class="link-title">Suno</div>
+                  <div class="link-url">{{ site.social.suno | replace("https://www.", "") | replace("https://", "") }}</div>
+                </div>
+              </a>
+              {% endif %}
+              
+              {% if site.social.spotify %}
+              <a href="{{ site.social.spotify }}" class="link-item" target="_blank" rel="noopener">
+                <div class="link-icon">🎧</div>
+                <div class="link-info">
+                  <div class="link-title">Spotify</div>
+                  <div class="link-url">{{ site.social.spotify | replace("https://www.", "") | replace("https://", "") }}</div>
+                </div>
+              </a>
+              {% endif %}
+              
+              {% if site.social.apple %}
+              <a href="{{ site.social.apple }}" class="link-item" target="_blank" rel="noopener">
+                <div class="link-icon">🍎</div>
+                <div class="link-info">
+                  <div class="link-title">Apple Music</div>
+                  <div class="link-url">{{ site.social.apple | replace("https://www.", "") | replace("https://", "") }}</div>
+                </div>
+              </a>
+              {% endif %}
+              
+              {% if site.social.bandcamp %}
+              <a href="{{ site.social.bandcamp }}" class="link-item" target="_blank" rel="noopener">
+                <div class="link-icon">🎸</div>
+                <div class="link-info">
+                  <div class="link-title">Bandcamp</div>
+                  <div class="link-url">{{ site.social.bandcamp | replace("https://www.", "") | replace("https://", "") }}</div>
+                </div>
+              </a>
+              {% endif %}
+              
+              {% if site.social.x %}
+              <a href="{{ site.social.x }}" class="link-item" target="_blank" rel="noopener">
+                <div class="link-icon">
+                  <img src="/assets/img/x.com-favicon.ico" alt="X" class="logo-icon">
+                </div>
+                <div class="link-info">
+                  <div class="link-title">X</div>
+                  <div class="link-url">{{ site.social.x | replace("https://www.", "") | replace("https://", "") }}</div>
+                </div>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

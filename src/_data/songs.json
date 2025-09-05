@@ -1,0 +1,345 @@
+[
+  {
+    "id": "VomxcNMgf-g",
+    "title": "真夜中の静電気",
+    "tags": ["electronic", "ambient", "all"],
+    "releaseDate": "2024-01-01",
+    "description": "静寂の中に響く電子音の世界"
+  },
+  {
+    "id": "wlDr5WOIjN4",
+    "title": "Crosswind Velocity",
+    "tags": ["electronic", "ambient", "all"],
+    "releaseDate": "2024-01-02",
+    "description": "風の速度を音で表現した楽曲"
+  },
+  {
+    "id": "iPyg5DHFLuQ",
+    "title": "Tango de Lágrimas Nocturnas",
+    "tags": ["tango", "latin", "all"],
+    "releaseDate": "2024-01-03",
+    "description": "夜の涙のタンゴ"
+  },
+  {
+    "id": "ryptNQ6Nc-8",
+    "title": "February Sky",
+    "tags": ["ambient", "atmospheric", "all"],
+    "releaseDate": "2024-01-04",
+    "description": "2月の空を描いた楽曲"
+  },
+  {
+    "id": "MRX9S4uRHEQ",
+    "title": "Slow Down, Moonlight",
+    "tags": ["ambient", "atmospheric", "all"],
+    "releaseDate": "2024-01-05",
+    "description": "月光のゆっくりとした動きを表現"
+  },
+  {
+    "id": "AQ8qx8QqtpE",
+    "title": "Highway Runs Through My Soul",
+    "tags": ["rock", "road", "all"],
+    "releaseDate": "2024-01-06",
+    "description": "魂を貫くハイウェイ"
+  },
+  {
+    "id": "r4DoNHSX1Ao",
+    "title": "Brilho do Verão",
+    "tags": ["bossa", "latin", "all"],
+    "releaseDate": "2024-01-07",
+    "description": "夏の輝き（ポルトガル語）"
+  },
+  {
+    "id": "KpoQ7PdMqVU",
+    "title": "衝動のままに 身体が反応している",
+    "tags": ["electronic", "experimental", "all"],
+    "releaseDate": "2024-01-08",
+    "description": "身体の自然な反応を音楽で表現"
+  },
+  {
+    "id": "FPUXAc5Yia4",
+    "title": "Bleed the Static",
+    "tags": ["electronic", "industrial", "all"],
+    "releaseDate": "2024-01-09",
+    "description": "静電気を流すような音響"
+  },
+  {
+    "id": "vCbrVIT_z3Q",
+    "title": "The Night Spins On",
+    "tags": ["ambient", "atmospheric", "all"],
+    "releaseDate": "2024-01-10",
+    "description": "夜が回り続ける"
+  },
+  {
+    "id": "zCxBN5kQHqE",
+    "title": "ただいまを言う場所が　ひとつあればいい　夜が深くなるほどに　星は数えやすい",
+    "tags": ["j-pop", "melancholic", "pops", "all"],
+    "releaseDate": "2024-01-11",
+    "description": "帰る場所への想いを込めた楽曲"
+  },
+  {
+    "id": "NpUwjX2oHzA",
+    "title": "Singet, Herzen, singet leise",
+    "tags": ["classical", "choral", "all"],
+    "releaseDate": "2024-01-12",
+    "description": "心よ、静かに歌え（ドイツ語）"
+  },
+  {
+    "id": "FWdwYb-KOZo",
+    "title": "Heidenröslein -SUNO AI-",
+    "tags": ["classical", "all"],
+    "releaseDate": "2024-01-13",
+    "description": "AI生成による野ばら（ドイツ語）"
+  },
+  {
+    "id": "9dsA2V9oEe4",
+    "title": "Routine Revolution",
+    "tags": ["electronic", "experimental", "all"],
+    "releaseDate": "2024-01-14",
+    "description": "日常の革命"
+  },
+  {
+    "id": "BcX_CzQ6cbk",
+    "title": "息を継ぐ街",
+    "tags": ["j-pop", "city", "pops", "all"],
+    "releaseDate": "2024-01-15",
+    "description": "街の息づかいを感じる楽曲"
+  },
+  {
+    "id": "kj81tMx_8xI",
+    "title": "チクタク・チョコミント",
+    "tags": ["j-pop", "quirky", "all"],
+    "releaseDate": "2024-01-16",
+    "description": "時計とチョコミントの不思議な組み合わせ"
+  },
+  {
+    "id": "i8WeSEJp_aw",
+    "title": "Above the Horizon",
+    "tags": ["ambient", "atmospheric", "all"],
+    "releaseDate": "2024-01-17",
+    "description": "地平線の向こう側"
+  },
+  {
+    "id": "D4B46vjEY1M",
+    "title": "Electric Sky",
+    "tags": ["electronic", "ambient", "all"],
+    "releaseDate": "2024-01-18",
+    "description": "電気的な空"
+  },
+  {
+    "id": "tzLF6lMcSBM",
+    "title": "君は少し斜めでいい",
+    "tags": ["j-pop", "melancholic", "all"],
+    "releaseDate": "2024-01-19",
+    "description": "完璧でなくてもいいというメッセージ"
+  },
+  {
+    "id": "GzajvlhqtrM",
+    "title": "耳すませば　息づく町",
+    "tags": ["j-pop", "city", "all"],
+    "releaseDate": "2024-01-20",
+    "description": "耳を澄ませば聞こえる街の音"
+  },
+  {
+    "id": "Kso7Xx5uWHs",
+    "title": "Kyrie -SUNO AI-",
+    "tags": ["classical", "choral", "all"],
+    "releaseDate": "2024-01-21",
+    "description": "AI生成によるキリエ（ラテン語）"
+  },
+  {
+    "id": "8u3PQI1tKSM",
+    "title": "One Step Behind",
+    "tags": ["ambient", "melancholic", "all"],
+    "releaseDate": "2024-01-22",
+    "description": "一歩遅れて"
+  },
+  {
+    "id": "lNfgWPfdfgA",
+    "title": "Rooted in Alabama",
+    "tags": ["folk", "americana", "all"],
+    "releaseDate": "2024-01-23",
+    "description": "アラバマに根ざした"
+  },
+  {
+    "id": "UfGBy7xGF1c",
+    "title": "Future Science Room",
+    "tags": ["electronic", "experimental", "all"],
+    "releaseDate": "2024-01-24",
+    "description": "未来の科学室"
+  },
+  {
+    "id": "repdohEMtNM",
+    "title": "あなたが私を",
+    "tags": ["j-pop", "melancholic", "pops", "all"],
+    "releaseDate": "2024-01-25",
+    "description": "あなたが私を変える"
+  },
+  {
+    "id": "1a_5yDik8Qw",
+    "title": "ALL NIGHT, ALL RIGHT!",
+    "tags": ["electronic", "dance", "all"],
+    "releaseDate": "2024-01-26",
+    "description": "一晩中、大丈夫！"
+  },
+  {
+    "id": "kMHIbL9DVoQ",
+    "title": "shutdown.exe",
+    "tags": ["electronic", "experimental", "pops", "all"],
+    "releaseDate": "2024-01-27",
+    "description": "シャットダウンプログラム"
+  },
+  {
+    "id": "Z4WQOlCyEs0",
+    "title": "暗くておかしなもの",
+    "tags": ["experimental", "dark", "all"],
+    "releaseDate": "2024-01-28",
+    "description": "暗くて奇妙なもの"
+  },
+  {
+    "id": "yMoDfqsa-h8",
+    "title": "Somos bossa, somos canção",
+    "tags": ["bossa", "latin", "all"],
+    "releaseDate": "2024-01-29",
+    "description": "私たちはボサノバ、私たちは歌（ポルトガル語）"
+  },
+  {
+    "id": "vTM0l-41ojE",
+    "title": "Above the Horizon ChiptuneFusion Remix",
+    "tags": ["chiptune", "remix", "electronic", "all"],
+    "releaseDate": "2024-01-30",
+    "description": "地平線の向こう側のチップチューンリミックス"
+  },
+  {
+    "id": "NZEk-oXw41Y",
+    "title": "たぶん今日もいい日になる",
+    "tags": ["j-pop", "optimistic", "pops", "all"],
+    "releaseDate": "2024-01-31",
+    "description": "今日もきっといい日になる"
+  },
+  {
+    "id": "TgVAm60n7z0",
+    "title": "E outra vez, a história é contada",
+    "tags": ["latin", "narrative", "all"],
+    "releaseDate": "2024-02-01",
+    "description": "そして再び、物語は語られる（ポルトガル語）"
+  },
+  {
+    "id": "q7el9IXQrKY",
+    "title": "頼んまっせファンク",
+    "tags": ["funk", "japanese", "all"],
+    "releaseDate": "2024-02-02",
+    "description": "関西弁のファンク"
+  },
+  {
+    "id": "yNuw-oOyJps",
+    "title": "春ci那tion",
+    "tags": ["j-pop", "spring", "all"],
+    "releaseDate": "2024-02-03",
+    "description": "春の訪れ"
+  },
+  {
+    "id": "JbniOdhFDQ8",
+    "title": "ゼロウェイト",
+    "tags": ["j-pop", "electronic", "pops", "all"],
+    "releaseDate": "2024-02-04",
+    "description": "ゼロの重み"
+  },
+  {
+    "id": "JnhVIhwgATE",
+    "title": "Nameless Fairy Tale",
+    "tags": ["ambient", "fairy-tale", "pops", "all"],
+    "releaseDate": "2024-02-05",
+    "description": "名前のないおとぎ話"
+  },
+  {
+    "id": "qq_RwDt9xy8",
+    "title": "Night runs backward",
+    "tags": ["experimental", "dark", "all"],
+    "releaseDate": "2024-02-06",
+    "description": "夜が逆走する"
+  },
+  {
+    "id": "f6lkuFt7BFo",
+    "title": "走り出す風",
+    "tags": ["j-pop", "nature", "pops", "all"],
+    "releaseDate": "2024-02-07",
+    "description": "走り始める風"
+  },
+  {
+    "id": "zx6ZVZflzww",
+    "title": "Turn / Return",
+    "tags": ["ambient", "circular", "all"],
+    "releaseDate": "2024-02-08",
+    "description": "回転/帰還"
+  },
+  {
+    "id": "XdBfCAR-iM8",
+    "title": "Gloria -SUNO AI-",
+    "tags": ["classical", "choral", "all"],
+    "releaseDate": "2024-02-09",
+    "description": "AI生成によるグローリア（ラテン語）"
+  },
+  {
+    "id": "ByEgypawjXM",
+    "title": "Twilight Rush",
+    "tags": ["ambient", "atmospheric", "all"],
+    "releaseDate": "2024-02-10",
+    "description": "黄昏の急流"
+  },
+  {
+    "id": "CRmpIMwH9_4",
+    "title": "Truth in motion, never still",
+    "tags": ["ambient", "philosophical", "pops", "all"],
+    "releaseDate": "2024-02-11",
+    "description": "動く真実、決して静止しない"
+  },
+  {
+    "id": "gS6Hve0APIs",
+    "title": "Infinite parallel world",
+    "tags": ["electronic", "experimental", "all"],
+    "releaseDate": "2024-02-12",
+    "description": "無限の並行世界"
+  },
+  {
+    "id": "vT0-sR7aVSE",
+    "title": "Into the Abyss",
+    "tags": ["dark", "experimental", "all"],
+    "releaseDate": "2024-02-13",
+    "description": "深淵へ"
+  },
+  {
+    "id": "pVAxWiWshYM",
+    "title": "夢の中で夢のままで",
+    "tags": ["j-pop", "dreamy", "all"],
+    "releaseDate": "2024-02-14",
+    "description": "夢の中で夢のまま"
+  },
+  {
+    "id": "s03mEH5Ni_E",
+    "title": "時空断層の矛盾律動",
+    "tags": ["experimental", "electronic", "all"],
+    "releaseDate": "2024-02-15",
+    "description": "時空の断層の矛盾した律動"
+  },
+  {
+    "id": "OL8vuCNWaOk",
+    "title": "人類隔離クラブ",
+    "tags": ["experimental", "dark", "all"],
+    "releaseDate": "2024-02-16",
+    "description": "人類隔離クラブ"
+  },
+  {
+    "id": "d1hjI9bHs5Y",
+    "title": "遠い記憶がこだまを呼び、そのあとは静けさが満ちていく",
+    "tags": ["ambient", "melancholic", "pops", "all"],
+    "releaseDate": "2024-02-17",
+    "description": "遠い記憶がこだまを呼び、そのあとは静けさが満ちていく"
+  },
+  {
+    "id": "1AkFD3tZ9jA",
+    "title": "All Aboard",
+    "tags": ["ambient", "journey", "all"],
+    "releaseDate": "2024-02-18",
+    "description": "全員乗車"
+  }
+]

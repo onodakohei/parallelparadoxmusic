@@ -3,6 +3,12 @@ module.exports = function(eleventyConfig) {
   // リポジトリ名が parallelparadoxmusic の場合
   eleventyConfig.addPassthroughCopy("src/assets");
   
+  // JSONファイルを静的ファイルとして配信
+  eleventyConfig.addPassthroughCopy({
+    "src/_data/songs.json": "songs.json",
+    "src/_data/playlists.json": "playlists.json"
+  });
+  
   return {
     dir: {
       input: "src",

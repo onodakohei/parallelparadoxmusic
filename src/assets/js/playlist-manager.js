@@ -1,18 +1,26 @@
-// プレイリストの定義
-const PLAYLISTS = [
-  {
-    id: 'PL73fsfH7Wif0WymWp6qpnPN1KkGHmSkMF',
-    name: 'ALL',
-    title: 'ALL'
-  },
-  {
-    id: 'PLi7O_6eOxnHhGeS-Uezr9cNqErwHNPNby',
-    name: 'POPS PPM1',
-    title: 'POPS PPM1'
+// プレイリストの定義（Eleventyから読み込まれる）
+let PLAYLISTS = [];
+let SONGS = [];
+
+// データの読み込み
+async function loadData() {
+  try {
+    const [playlistsResponse, songsResponse] = await Promise.all([
+      fetch('/playlists.json'),
+      fetch('/songs.json')
+    ]);
+    
+    PLAYLISTS = await playlistsResponse.json();
+    SONGS = await songsResponse.json();
+    
+    console.log('データが読み込まれました:', { PLAYLISTS, SONGS });
+  } catch (error) {
+    console.error('データの読み込みに失敗しました:', error);
   }
-];
+}
 
 let currentPlaylistIndex = 0;
+let isAutoPlaying = false; // 自動再生中のフラグ
 
 // プレイリスト切り替え関数
 function nextPlaylist() {
@@ -31,146 +39,61 @@ function updatePlaylistDisplay() {
     playlistInfo.textContent = PLAYLISTS[currentPlaylistIndex].name;
   }
   
-  // プレイリスト切り替え時に即座に曲を再生
+  // プレイリスト選択モーダル内の選択状態も更新
+  updatePlaylistSelectorActiveState();
+  
+  // プレイリスト名オーバーレイを表示
+  showPlaylistOverlay();
+  
+  // プレイリスト切り替え時に自動再生（安全な方法で）
   const currentPlaylistId = getCurrentPlaylistId();
   console.log('プレイリスト切り替え:', PLAYLISTS[currentPlaylistIndex].name, 'ID:', currentPlaylistId);
   
-  // 現在のプレイリストからランダムな曲を再生
-  if (typeof playRandomAudio === 'function') {
-    playRandomAudio(currentPlaylistId, PLAYLISTS[currentPlaylistIndex].name);
+  // データが正常に読み込まれている場合のみ自動再生
+  if (PLAYLISTS.length > 0 && SONGS.length > 0 && typeof playRandomAudio === 'function' && !isAutoPlaying) {
+    isAutoPlaying = true; // フラグを設定
+    
+    // 少し遅延させて安全に実行
+    setTimeout(() => {
+      playRandomAudio(currentPlaylistId, PLAYLISTS[currentPlaylistIndex].name);
+      isAutoPlaying = false; // フラグをリセット
+    }, 100);
   }
+}
+
+// プレイリスト選択モーダル内の選択状態を更新
+function updatePlaylistSelectorActiveState() {
+  const playlistItems = document.querySelectorAll('#playlist-list .playlist-item');
+  playlistItems.forEach((item, index) => {
+    if (index === currentPlaylistIndex) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
 }
 
 // 現在のプレイリストIDを取得
 function getCurrentPlaylistId() {
-  return PLAYLISTS[currentPlaylistIndex].id;
+  return PLAYLISTS[currentPlaylistIndex]?.id || 'all';
 }
 
-// 手動で管理するプレイリスト情報
-const PLAYLIST_DATA = {
-  'PL73fsfH7Wif0WymWp6qpnPN1KkGHmSkMF': {
-    name: 'Parallel Paradox Music',
-    videos: [
-      'VomxcNMgf-g', // 真夜中の静電気
-      'wlDr5WOIjN4', // Crosswind Velocity
-      'iPyg5DHFLuQ', // Tango de Lágrimas Nocturnas
-      'ryptNQ6Nc-8', // February Sky
-      'MRX9S4uRHEQ', // Slow Down, Moonlight
-      'AQ8qx8QqtpE', // Highway Runs Through My Soul
-      'r4DoNHSX1Ao', // Brilho do Verão
-      'KpoQ7PdMqVU', // 衝動のままに 身体が反応している
-      'FPUXAc5Yia4', // Bleed the Static
-      'vCbrVIT_z3Q', // The Night Spins On
-      'zCxBN5kQHqE', // ただいまを言う場所が　ひとつあればいい　夜が深くなるほどに　星は数えやすい
-      'NpUwjX2oHzA', // Singet, Herzen, singet leise
-      'FWdwYb-KOZo', // Heidenröslein -SUNO AI-
-      '9dsA2V9oEe4', // Routine Revolution
-      'BcX_CzQ6cbk', // 息を継ぐ街
-      'kj81tMx_8xI', // チクタク・チョコミント
-      'i8WeSEJp_aw', // Above the Horizon
-      'D4B46vjEY1M', // Electric Sky
-      'tzLF6lMcSBM', // 君は少し斜めでいい
-      'GzajvlhqtrM', // 耳すませば　息づく町
-      'Kso7Xx5uWHs', // Kyrie -SUNO AI-
-      '8u3PQI1tKSM', // One Step Behind
-      'lNfgWPfdfgA', // Rooted in Alabama
-      'UfGBy7xGF1c', // Future Science Room
-      'repdohEMtNM', // あなたが私を
-      '1a_5yDik8Qw', // ALL NIGHT, ALL RIGHT!
-      'kMHIbL9DVoQ', // shutdown.exe
-      'Z4WQOlCyEs0', // 暗くておかしなもの
-      'yMoDfqsa-h8', // Somos bossa, somos canção
-      'vTM0l-41ojE', // Above the Horizon ChiptuneFusion Remix
-      'NZEk-oXw41Y', // たぶん今日もいい日になる
-      'TgVAm60n7z0', // E outra vez, a história é contada
-      'q7el9IXQrKY', // 頼んまっせファンク
-      'yNuw-oOyJps', // 春ci那tion
-      'JbniOdhFDQ8', // ゼロウェイト
-      'JnhVIhwgATE', // Nameless Fairy Tale
-      'qq_RwDt9xy8', // Night runs backward
-      'f6lkuFt7BFo', // 走り出す風
-      'zx6ZVZflzww', // Turn / Return
-      'XdBfCAR-iM8', // Gloria -SUNO AI-
-      'ByEgypawjXM', // Twilight Rush
-      'CRmpIMwH9_4', // Truth in motion, never still
-      'gS6Hve0APIs', // Infinite parallel world
-      'vT0-sR7aVSE', // Into the Abyss
-      'pVAxWiWshYM', // 夢の中で夢のままで
-      's03mEH5Ni_E', // 時空断層の矛盾律動
-      'OL8vuCNWaOk', // 人類隔離クラブ
-      'd1hjI9bHs5Y', // 遠い記憶がこだまを呼び、そのあとは静けさが満ちていく
-      '1AkFD3tZ9jA'  // All Aboard
-    ]
-  },
-  'PLi7O_6eOxnHhGeS-Uezr9cNqErwHNPNby': {
-    name: 'POPS PPM1',
-    videos: [
-      'BcX_CzQ6cbk', // 息を継ぐ街
-      'zCxBN5kQHqE', // ただいまを言う場所が　ひとつあればいい　夜が深くなるほどに　星は数えやすい
-      'JnhVIhwgATE', // Nameless Fairy Tale
-      'repdohEMtNM', // あなたが私を
-      'CRmpIMwH9_4', // Truth in motion, never still
-      'NZEk-oXw41Y', // たぶん今日もいい日になる
-      'f6lkuFt7BFo', // 走り出す風
-      'JbniOdhFDQ8', // ゼロウェイト
-      'kMHIbL9DVoQ', // shutdown.exe
-      'd1hjI9bHs5Y'  // 遠い記憶がこだまを呼び、そのあとは静けさが満ちていく
-    ]
+// タグベースで楽曲をフィルタリングする関数
+function getSongsByTags(tags) {
+  if (!SONGS || SONGS.length === 0) {
+    console.warn('楽曲データが読み込まれていません');
+    return [];
   }
-};
+  
+  return SONGS.filter(song => {
+    return tags.some(tag => song.tags.includes(tag));
+  });
+}
 
-// 曲のタイトル情報
-const SONG_TITLES = {
-  'VomxcNMgf-g': '真夜中の静電気',
-  'wlDr5WOIjN4': 'Crosswind Velocity',
-  'iPyg5DHFLuQ': 'Tango de Lágrimas Nocturnas',
-  'ryptNQ6Nc-8': 'February Sky',
-  'MRX9S4uRHEQ': 'Slow Down, Moonlight',
-  'AQ8qx8QqtpE': 'Highway Runs Through My Soul',
-  'r4DoNHSX1Ao': 'Brilho do Verão',
-  'KpoQ7PdMqVU': '衝動のままに 身体が反応している',
-  'FPUXAc5Yia4': 'Bleed the Static',
-  'vCbrVIT_z3Q': 'The Night Spins On',
-  'zCxBN5kQHqE': 'ただいまを言う場所が　ひとつあればいい　夜が深くなるほどに　星は数えやすい',
-  'NpUwjX2oHzA': 'Singet, Herzen, singet leise',
-  'FWdwYb-KOZo': 'Heidenröslein -SUNO AI-',
-  '9dsA2V9oEe4': 'Routine Revolution',
-  'BcX_CzQ6cbk': '息を継ぐ街',
-  'kj81tMx_8xI': 'チクタク・チョコミント',
-  'i8WeSEJp_aw': 'Above the Horizon',
-  'D4B46vjEY1M': 'Electric Sky',
-  'tzLF6lMcSBM': '君は少し斜めでいい',
-  'GzajvlhqtrM': '耳すませば　息づく町',
-  'Kso7Xx5uWHs': 'Kyrie -SUNO AI-',
-  '8u3PQI1tKSM': 'One Step Behind',
-  'lNfgWPfdfgA': 'Rooted in Alabama',
-  'UfGBy7xGF1c': 'Future Science Room',
-  'repdohEMtNM': 'あなたが私を',
-  '1a_5yDik8Qw': 'ALL NIGHT, ALL RIGHT!',
-  'kMHIbL9DVoQ': 'shutdown.exe',
-  'Z4WQOlCyEs0': '暗くておかしなもの',
-  'yMoDfqsa-h8': 'Somos bossa, somos canção',
-  'vTM0l-41ojE': 'Above the Horizon ChiptuneFusion Remix',
-  'NZEk-oXw41Y': 'たぶん今日もいい日になる',
-  'TgVAm60n7z0': 'E outra vez, a história é contada',
-  'q7el9IXQrKY': '頼んまっせファンク',
-  'yNuw-oOyJps': '春ci那tion',
-  'JbniOdhFDQ8': 'ゼロウェイト',
-  'JnhVIhwgATE': 'Nameless Fairy Tale',
-  'qq_RwDt9xy8': 'Night runs backward',
-  'f6lkuFt7BFo': '走り出す風',
-  'zx6ZVZflzww': 'Turn / Return',
-  'XdBfCAR-iM8': 'Gloria -SUNO AI-',
-  'ByEgypawjXM': 'Twilight Rush',
-  'CRmpIMwH9_4': 'Truth in motion, never still',
-  'gS6Hve0APIs': 'Infinite parallel world',
-  'vT0-sR7aVSE': 'Into the Abyss',
-  'pVAxWiWshYM': '夢の中で夢のままで',
-  's03mEH5Ni_E': '時空断層の矛盾律動',
-  'OL8vuCNWaOk': '人類隔離クラブ',
-  'd1hjI9bHs5Y': '遠い記憶がこだまを呼び、そのあとは静けさが満ちていく',
-  '1AkFD3tZ9jA': 'All Aboard'
-};
+// 楽曲IDから楽曲情報を取得する関数
+function getSongById(songId) {
+  return SONGS.find(song => song.id === songId);
+}
 
 // プレイリスト管理クラス
 class PlaylistManager {
@@ -182,14 +105,18 @@ class PlaylistManager {
   // プレイリストからランダムな動画を取得（一巡するまで同じ曲を選ばない）
   getRandomVideo(playlistId) {
     console.log('getRandomVideo 呼び出し:', playlistId);
-    console.log('PLAYLIST_DATA:', PLAYLIST_DATA);
-    console.log('利用可能なプレイリストID:', Object.keys(PLAYLIST_DATA));
     
-    const playlist = PLAYLIST_DATA[playlistId];
-    if (!playlist || playlist.videos.length === 0) {
-      console.error('プレイリストが見つからないか、動画がありません');
-      console.error('検索したプレイリストID:', playlistId);
-      console.error('利用可能なプレイリスト:', Object.keys(PLAYLIST_DATA));
+    // プレイリスト情報を取得
+    const playlist = PLAYLISTS.find(p => p.id === playlistId);
+    if (!playlist) {
+      console.error('プレイリストが見つかりません:', playlistId);
+      return null;
+    }
+
+    // タグベースで楽曲をフィルタリング
+    const availableSongs = getSongsByTags(playlist.tags);
+    if (availableSongs.length === 0) {
+      console.error('該当する楽曲がありません');
       return null;
     }
 
@@ -199,92 +126,69 @@ class PlaylistManager {
     }
 
     // すべての曲が再生済みの場合、リセット
-    if (this.playedVideos[playlistId].length >= playlist.videos.length) {
+    if (this.playedVideos[playlistId].length >= availableSongs.length) {
       console.log('プレイリストが一巡しました。リセットします。');
       this.playedVideos[playlistId] = [];
     }
 
     // まだ再生されていない曲のみから選択
-    const availableVideos = playlist.videos.filter(videoId => 
-      !this.playedVideos[playlistId].includes(videoId)
+    const unplayedSongs = availableSongs.filter(song => 
+      !this.playedVideos[playlistId].includes(song.id)
     );
 
-    if (availableVideos.length === 0) {
+    if (unplayedSongs.length === 0) {
       console.error('再生可能な曲がありません');
       return null;
     }
 
     // 利用可能な曲からランダムに選択
-    const randomIndex = Math.floor(Math.random() * availableVideos.length);
-    const videoId = availableVideos[randomIndex];
+    const randomIndex = Math.floor(Math.random() * unplayedSongs.length);
+    const selectedSong = unplayedSongs[randomIndex];
     
     // 再生済みリストに追加
-    this.playedVideos[playlistId].push(videoId);
+    this.playedVideos[playlistId].push(selectedSong.id);
     
-    console.log(`選択された曲: ${videoId} (${SONG_TITLES[videoId] || 'Unknown'})`);
-    console.log(`再生済み曲数: ${this.playedVideos[playlistId].length}/${playlist.videos.length}`);
+    console.log(`選択された曲: ${selectedSong.id} (${selectedSong.title})`);
+    console.log(`再生済み曲数: ${this.playedVideos[playlistId].length}/${availableSongs.length}`);
     
     return {
-      id: videoId,
-      title: SONG_TITLES[videoId] || `Track ${randomIndex + 1}`,
-      thumbnail: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+      id: selectedSong.id,
+      title: selectedSong.title,
+      thumbnail: `https://img.youtube.com/vi/${selectedSong.id}/maxresdefault.jpg`
     };
   }
 
   // プレイリスト情報を表示（デバッグ用）
   displayPlaylistInfo(playlistId) {
-    const playlist = PLAYLIST_DATA[playlistId];
+    const playlist = PLAYLISTS.find(p => p.id === playlistId);
     if (!playlist) {
       console.log('プレイリストが見つかりません');
       return;
     }
 
+    const availableSongs = getSongsByTags(playlist.tags);
+
     console.log('=== プレイリスト情報 ===');
     console.log(`プレイリスト名: ${playlist.name}`);
-    console.log(`動画数: ${playlist.videos.length}`);
-    console.log('動画ID一覧:');
-    playlist.videos.forEach((videoId, index) => {
-      console.log(`${index + 1}. ${videoId}`);
+    console.log(`タグ: ${playlist.tags.join(', ')}`);
+    console.log(`楽曲数: ${availableSongs.length}`);
+    console.log('楽曲一覧:');
+    availableSongs.forEach((song, index) => {
+      console.log(`${index + 1}. ${song.id} - ${song.title}`);
     });
   }
 
-  // 動画IDを追加
-  addVideo(playlistId, videoId, title = '') {
-    if (!PLAYLIST_DATA[playlistId]) {
-      PLAYLIST_DATA[playlistId] = {
-        name: 'Custom Playlist',
-        videos: []
-      };
-    }
+  // プレイリストの全楽曲を取得
+  getAllSongs(playlistId) {
+    const playlist = PLAYLISTS.find(p => p.id === playlistId);
+    if (!playlist) return [];
     
-    PLAYLIST_DATA[playlistId].videos.push(videoId);
-    console.log(`動画ID ${videoId} を追加しました (${title})`);
+    return getSongsByTags(playlist.tags);
   }
 
-  // 動画IDを削除
-  removeVideo(playlistId, videoId) {
-    const playlist = PLAYLIST_DATA[playlistId];
-    if (!playlist) return false;
-    
-    const index = playlist.videos.indexOf(videoId);
-    if (index > -1) {
-      playlist.videos.splice(index, 1);
-      console.log(`動画ID ${videoId} を削除しました`);
-      return true;
-    }
-    return false;
-  }
-
-  // プレイリストの全動画を取得
-  getAllVideos(playlistId) {
-    const playlist = PLAYLIST_DATA[playlistId];
-    return playlist ? playlist.videos : [];
-  }
-
-  // プレイリストの動画数を取得
-  getVideoCount(playlistId) {
-    const playlist = PLAYLIST_DATA[playlistId];
-    return playlist ? playlist.videos.length : 0;
+  // プレイリストの楽曲数を取得
+  getSongCount(playlistId) {
+    return this.getAllSongs(playlistId).length;
   }
 }
 
@@ -294,21 +198,144 @@ const playlistManager = new PlaylistManager();
 // グローバルスコープで利用可能にする
 window.playlistManager = playlistManager;
 
-// 初期化時にプレイリスト情報を表示
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('プレイリストマネージャーが初期化されました');
-  console.log('PLAYLIST_DATA:', PLAYLIST_DATA);
-  console.log('PLAYLISTS:', PLAYLISTS);
-  console.log('利用可能なプレイリスト:');
-  Object.keys(PLAYLIST_DATA).forEach(playlistId => {
-    playlistManager.displayPlaylistInfo(playlistId);
+// Aboutモーダル関数
+function showAboutModal() {
+  const modal = document.getElementById('aboutModal');
+  if (modal) {
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // スクロールを無効化
+  }
+}
+
+function closeAboutModal() {
+  const modal = document.getElementById('aboutModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // スクロールを有効化
+  }
+}
+
+// モーダル外をクリックした時に閉じる
+document.addEventListener('click', function(event) {
+  const aboutModal = document.getElementById('aboutModal');
+  const playlistSelector = document.getElementById('playlist-selector');
+  
+  if (event.target === aboutModal) {
+    closeAboutModal();
+  }
+  
+  if (event.target === playlistSelector) {
+    closePlaylistSelector();
+  }
+});
+
+// ESCキーでモーダルを閉じる
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeAboutModal();
+    closePlaylistSelector();
+  }
+});
+
+// プレイリスト選択モーダル関数
+function showPlaylistSelector() {
+  const modal = document.getElementById('playlist-selector');
+  if (modal) {
+    // プレイリスト一覧を動的に生成
+    generatePlaylistList();
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closePlaylistSelector() {
+  const modal = document.getElementById('playlist-selector');
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = 'auto';
+  }
+}
+
+// プレイリスト一覧を動的に生成
+function generatePlaylistList() {
+  const playlistList = document.getElementById('playlist-list');
+  if (!playlistList || PLAYLISTS.length === 0) {
+    return;
+  }
+  
+  // 既存の内容をクリア
+  playlistList.innerHTML = '';
+  
+  // 各プレイリストを生成
+  PLAYLISTS.forEach((playlist, index) => {
+    const playlistItem = document.createElement('div');
+    playlistItem.className = 'playlist-item';
+    if (index === currentPlaylistIndex) {
+      playlistItem.classList.add('active');
+    }
+    playlistItem.onclick = () => selectPlaylist(index);
+    
+    const playlistName = document.createElement('span');
+    playlistName.className = 'playlist-name';
+    playlistName.textContent = playlist.name;
+    
+    playlistItem.appendChild(playlistName);
+    playlistList.appendChild(playlistItem);
   });
-  console.log('動画IDを追加するには、playlistManager.addVideo() を使用してください');
+}
+
+// プレイリスト選択関数
+function selectPlaylist(index) {
+  if (index >= 0 && index < PLAYLISTS.length) {
+    currentPlaylistIndex = index;
+    updatePlaylistDisplay();
+    closePlaylistSelector();
+  }
+}
+
+// プレイリスト名オーバーレイ表示関数
+function showPlaylistOverlay() {
+  const overlay = document.getElementById('playlist-overlay');
+  const overlayName = document.getElementById('playlist-overlay-name');
+  
+  if (overlay && overlayName && PLAYLISTS.length > 0) {
+    // プレイリスト名を設定
+    overlayName.textContent = PLAYLISTS[currentPlaylistIndex].name;
+    
+    // オーバーレイを表示
+    overlay.classList.add('show');
+    
+    // 3秒後に自動的に非表示
+    setTimeout(() => {
+      overlay.classList.remove('show');
+    }, 3000);
+  }
+}
+
+// 初期化時にプレイリスト情報を表示
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('プレイリストマネージャーが初期化されました');
+  
+  // データを読み込み
+  await loadData();
+  
+  // データが正常に読み込まれた場合のみ処理を続行
+  if (PLAYLISTS.length === 0 || SONGS.length === 0) {
+    console.warn('プレイリストまたは楽曲データが読み込まれていません');
+    return;
+  }
+  
+  console.log('PLAYLISTS:', PLAYLISTS);
+  console.log('SONGS:', SONGS);
+  console.log('利用可能なプレイリスト:');
+  PLAYLISTS.forEach(playlist => {
+    playlistManager.displayPlaylistInfo(playlist.id);
+  });
   
   // 初期表示を設定
   const playlistInfo = document.getElementById('current-playlist');
-  if (playlistInfo) {
-    playlistInfo.textContent = 'ALL';
+  if (playlistInfo && PLAYLISTS.length > 0) {
+    playlistInfo.textContent = PLAYLISTS[0].name;
   }
   
   const currentSongElement = document.getElementById('current-song');
@@ -316,5 +343,13 @@ document.addEventListener('DOMContentLoaded', function() {
     currentSongElement.textContent = '';
   }
   
-
+  // 初期化時に自動再生（安全な方法で）
+  if (PLAYLISTS.length > 0 && SONGS.length > 0 && typeof playRandomAudio === 'function' && !isAutoPlaying) {
+    isAutoPlaying = true;
+    setTimeout(() => {
+      const currentPlaylistId = getCurrentPlaylistId();
+      playRandomAudio(currentPlaylistId, PLAYLISTS[0].name);
+      isAutoPlaying = false;
+    }, 200); // 初期化時は少し長めの遅延
+  }
 });

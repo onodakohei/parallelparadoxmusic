@@ -1,0 +1,51 @@
+[
+  {
+    "id": "all",
+    "name": "ALL",
+    "title": "全楽曲",
+    "description": "すべての楽曲を含むプレイリスト",
+    "tags": ["all"]
+  },
+  {
+    "id": "pops",
+    "name": "POPS PPM1",
+    "title": "ポップス",
+    "description": "ポップス系の楽曲を集めたプレイリスト",
+    "tags": ["pops"]
+  },
+  {
+    "id": "electronic",
+    "name": "Electronic",
+    "title": "エレクトロニック",
+    "description": "エレクトロニック系の楽曲",
+    "tags": ["electronic"]
+  },
+  {
+    "id": "ambient",
+    "name": "Ambient",
+    "title": "アンビエント",
+    "description": "アンビエント系の楽曲",
+    "tags": ["ambient"]
+  },
+  {
+    "id": "j-pop",
+    "name": "J-POP",
+    "title": "J-POP",
+    "description": "日本語ポップス",
+    "tags": ["j-pop"]
+  },
+  {
+    "id": "experimental",
+    "name": "Experimental",
+    "title": "実験的",
+    "description": "実験的な楽曲",
+    "tags": ["experimental"]
+  },
+  {
+    "id": "classical",
+    "name": "Classical",
+    "title": "クラシック",
+    "description": "クラシック系の楽曲",
+    "tags": ["classical"]
+  }
+]

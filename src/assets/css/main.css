@@ -362,6 +362,67 @@ body.has-dynamic-background .container {
   }
 }
 
+/* プレイリスト名表示オーバーレイ */
+.playlist-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: backgroundFadeInOut 3s ease-in-out;
+}
+
+.playlist-overlay.show {
+  display: flex;
+}
+
+@keyframes backgroundFadeInOut {
+  0% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+  20% {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  80% {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  100% {
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+
+.playlist-overlay-content {
+  text-align: center;
+  color: #fff;
+}
+
+.playlist-overlay-name {
+  font-size: 3rem;
+  font-weight: 700;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* プレイリスト選択モーダル */
 .playlist-selector {
   display: none;
@@ -399,7 +460,7 @@ body.has-dynamic-background .container {
   border-radius: 4px;
   margin-bottom: 4px;
   border: none;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: transparent;
 }
 
 .playlist-item:last-child {
@@ -410,6 +471,16 @@ body.has-dynamic-background .container {
   color: #ffffff;
   font-size: 1rem;
   font-weight: 400;
+}
+
+.playlist-item.active {
+  background-color: rgba(0, 122, 204, 0.2);
+  border: 1px solid #007acc;
+}
+
+.playlist-item.active .playlist-name {
+  color: #007acc;
+  font-weight: 600;
 }
 
 /* プレイリスト名のホバー効果 */
@@ -497,4 +568,174 @@ body.has-dynamic-background .container {
 
 .link-item:hover .link-name {
   color: #007acc;
+}
+
+/* About Modal Styles */
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: #1a1a1a;
+  margin: 5% auto;
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  width: 95%;
+  max-width: 1000px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  z-index: 1001;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+  color: #fff;
+  text-decoration: none;
+}
+
+.about-section {
+  padding: 2rem;
+}
+
+.about-section h1 {
+  color: #fff;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 2rem;
+}
+
+.about-description {
+  color: #ccc;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0 1rem;
+}
+
+.about-content {
+  margin-top: 2rem;
+}
+
+.links-section, .website-info {
+  margin-top: 3rem;
+}
+
+.links-section h2, .website-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.link-item, .website-link {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: #2a2a2a;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.link-item:hover, .website-link:hover {
+  background: #3a3a3a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.link-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+  min-width: 3rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.link-info {
+  flex: 1;
+}
+
+.link-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+  color: #fff;
+}
+
+.link-url {
+  font-size: 0.9rem;
+  color: #ccc;
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.website-link {
+  max-width: 400px;
+}
+
+/* Mobile responsive for modal */
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+    max-height: 85vh;
+  }
+  
+  .about-section {
+    padding: 1rem;
+  }
+  
+  .links-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .link-item, .website-link {
+    padding: 0.75rem;
+  }
+  
+  .link-icon {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+    min-width: 2.5rem;
+  }
 }
