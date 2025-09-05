@@ -6,10 +6,18 @@ let SONGS = [];
 async function loadData() {
   try {
     const timestamp = new Date().getTime(); // Generate a unique timestamp
+    
+    // GitHub Pages用のパスを動的に決定
+    const basePath = window.location.hostname === 'localhost' ? '' : '/parallelparadoxmusic';
+    
     const [playlistsResponse, songsResponse] = await Promise.all([
-      fetch(`/playlists.json?v=${timestamp}`), // Add timestamp to URL
-      fetch(`/songs.json?v=${timestamp}`)     // Add timestamp to URL
+      fetch(`${basePath}/playlists.json?v=${timestamp}`), // Add timestamp to URL
+      fetch(`${basePath}/songs.json?v=${timestamp}`)     // Add timestamp to URL
     ]);
+    
+    if (!playlistsResponse.ok || !songsResponse.ok) {
+      throw new Error(`HTTP error! status: ${playlistsResponse.status}, ${songsResponse.status}`);
+    }
     
     PLAYLISTS = await playlistsResponse.json();
     SONGS = await songsResponse.json();
@@ -17,6 +25,20 @@ async function loadData() {
     console.log('データが読み込まれました:', { PLAYLISTS, SONGS });
   } catch (error) {
     console.error('データの読み込みに失敗しました:', error);
+    // フォールバック: ローカルパスで再試行
+    try {
+      const [playlistsResponse, songsResponse] = await Promise.all([
+        fetch(`/playlists.json?v=${new Date().getTime()}`),
+        fetch(`/songs.json?v=${new Date().getTime()}`)
+      ]);
+      
+      PLAYLISTS = await playlistsResponse.json();
+      SONGS = await songsResponse.json();
+      
+      console.log('フォールバックでデータが読み込まれました:', { PLAYLISTS, SONGS });
+    } catch (fallbackError) {
+      console.error('フォールバックでもデータの読み込みに失敗しました:', fallbackError);
+    }
   }
 }
 
@@ -333,6 +355,8 @@ function showPlaylistOverlay() {
 // 初期化時にプレイリスト情報を表示
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('プレイリストマネージャーが初期化されました');
+  console.log('現在のURL:', window.location.href);
+  console.log('ホスト名:', window.location.hostname);
   
   // データを読み込み
   await loadData();
@@ -340,9 +364,24 @@ document.addEventListener('DOMContentLoaded', async function() {
   // データが正常に読み込まれた場合のみ処理を続行
   if (PLAYLISTS.length === 0 || SONGS.length === 0) {
     console.warn('プレイリストまたは楽曲データが読み込まれていません');
+    console.log('PLAYLISTS length:', PLAYLISTS.length);
+    console.log('SONGS length:', SONGS.length);
+    
+    // 3秒後に再試行
+    setTimeout(async () => {
+      console.log('データの再読み込みを試行します...');
+      await loadData();
+      if (PLAYLISTS.length > 0 && SONGS.length > 0) {
+        initializePlaylistManager();
+      }
+    }, 3000);
     return;
   }
   
+  initializePlaylistManager();
+});
+
+function initializePlaylistManager() {
   console.log('PLAYLISTS:', PLAYLISTS);
   console.log('SONGS:', SONGS);
   console.log('利用可能なプレイリスト:');
@@ -366,11 +405,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     isAutoPlaying = true;
     setTimeout(() => {
       const currentPlaylistId = getCurrentPlaylistId();
+      console.log('初期自動再生開始:', currentPlaylistId, PLAYLISTS[0].name);
       playRandomAudio(currentPlaylistId, PLAYLISTS[0].name);
       isAutoPlaying = false;
-    }, 200); // 初期化時は少し長めの遅延
+    }, 500); // 初期化時は少し長めの遅延
   }
-});
+}
 
 // 現在のプレイリストから再生
 function playCurrentPlaylist() {
@@ -399,7 +439,9 @@ function playRandomAudio(playlistId, title) {
   // 手動プレイリストからランダムな動画を取得
   const randomVideo = playlistManager.getRandomVideo(playlistId);
   if (!randomVideo) {
-    console.error('動画が見つかりません');
+    console.error('動画が見つかりません。プレイリストID:', playlistId);
+    console.log('利用可能なプレイリスト:', PLAYLISTS);
+    console.log('利用可能な楽曲:', SONGS);
     return;
   }
 
@@ -423,7 +465,7 @@ function playRandomAudio(playlistId, title) {
 
     // 従来のiframe方式で再生（音声が出ていた方式）
   console.log('iframe方式で再生開始');
-  const audioUrl = `https://www.youtube.com/embed/${randomVideo.id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&loop=0&mute=0`;
+  const audioUrl = `https://www.youtube.com/embed/${randomVideo.id}?autoplay=1&modestbranding=1&rel=0&controls=0&disablekb=1&fs=0&iv_load_policy=3&cc_load_policy=0&autohide=1&loop=0&mute=0&enablejsapi=1&origin=${window.location.origin}`;
   console.log('iframe URL:', audioUrl);
   hiddenPlayer.src = audioUrl;
   
