@@ -10,14 +10,58 @@ async function loadData() {
     // GitHub Pages用のパスを動的に決定
     const basePath = window.location.hostname === 'localhost' ? '' : '/parallelparadoxmusic';
     console.log('Base path determined:', basePath);
+    console.log('Current URL:', window.location.href);
     
-    const [playlistsResponse, songsResponse] = await Promise.all([
-      fetch(`${basePath}/playlists.json?v=${timestamp}`), // Add timestamp to URL
-      fetch(`${basePath}/songs.json?v=${timestamp}`)     // Add timestamp to URL
-    ]);
+    // 複数のパスを試行
+    const possiblePaths = [
+      `${basePath}/playlists.json`,
+      `/playlists.json`,
+      `./playlists.json`,
+      `playlists.json`
+    ];
     
-    if (!playlistsResponse.ok || !songsResponse.ok) {
-      throw new Error(`HTTP error! status: ${playlistsResponse.status}, ${songsResponse.status}`);
+    const possibleSongPaths = [
+      `${basePath}/songs.json`,
+      `/songs.json`,
+      `./songs.json`,
+      `songs.json`
+    ];
+    
+    let playlistsResponse, songsResponse;
+    let playlistsUrl, songsUrl;
+    
+    // プレイリストファイルのパスを試行
+    for (const path of possiblePaths) {
+      try {
+        console.log('Trying playlists path:', path);
+        playlistsResponse = await fetch(`${path}?v=${timestamp}`);
+        if (playlistsResponse.ok) {
+          playlistsUrl = path;
+          console.log('Playlists found at:', path);
+          break;
+        }
+      } catch (e) {
+        console.log('Failed to load from:', path);
+      }
+    }
+    
+    // 楽曲ファイルのパスを試行
+    for (const path of possibleSongPaths) {
+      try {
+        console.log('Trying songs path:', path);
+        songsResponse = await fetch(`${path}?v=${timestamp}`);
+        if (songsResponse.ok) {
+          songsUrl = path;
+          console.log('Songs found at:', path);
+          break;
+        }
+      } catch (e) {
+        console.log('Failed to load from:', path);
+      }
+    }
+    
+    if (!playlistsResponse || !songsResponse || !playlistsResponse.ok || !songsResponse.ok) {
+      throw new Error(`Failed to load JSON files. Playlists: ${playlistsResponse?.status}, Songs: ${songsResponse?.status}`);
     }
     
     PLAYLISTS = await playlistsResponse.json();
