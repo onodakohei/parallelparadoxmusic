@@ -5,9 +5,10 @@ let SONGS = [];
 // データの読み込み
 async function loadData() {
   try {
+    const timestamp = new Date().getTime(); // Generate a unique timestamp
     const [playlistsResponse, songsResponse] = await Promise.all([
-      fetch('/playlists.json'),
-      fetch('/songs.json')
+      fetch(`/playlists.json?v=${timestamp}`), // Add timestamp to URL
+      fetch(`/songs.json?v=${timestamp}`)     // Add timestamp to URL
     ]);
     
     PLAYLISTS = await playlistsResponse.json();
@@ -197,6 +198,23 @@ const playlistManager = new PlaylistManager();
 
 // グローバルスコープで利用可能にする
 window.playlistManager = playlistManager;
+
+// Aboutモーダル関数
+function showAboutModal() {
+  const modal = document.getElementById('aboutModal');
+  if (modal) {
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden'; // スクロールを無効化
+  }
+}
+
+function closeAboutModal() {
+  const modal = document.getElementById('aboutModal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto'; // スクロールを有効化
+  }
+}
 
 // Aboutモーダル関数
 function showAboutModal() {

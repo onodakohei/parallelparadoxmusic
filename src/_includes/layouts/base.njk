@@ -45,36 +45,6 @@
               </a>
               {% endif %}
               
-              {% if site.social.spotify %}
-              <a href="{{ site.social.spotify }}" class="link-item" target="_blank" rel="noopener">
-                <div class="link-icon">🎧</div>
-                <div class="link-info">
-                  <div class="link-title">Spotify</div>
-                  <div class="link-url">{{ site.social.spotify | replace("https://www.", "") | replace("https://", "") }}</div>
-                </div>
-              </a>
-              {% endif %}
-              
-              {% if site.social.apple %}
-              <a href="{{ site.social.apple }}" class="link-item" target="_blank" rel="noopener">
-                <div class="link-icon">🍎</div>
-                <div class="link-info">
-                  <div class="link-title">Apple Music</div>
-                  <div class="link-url">{{ site.social.apple | replace("https://www.", "") | replace("https://", "") }}</div>
-                </div>
-              </a>
-              {% endif %}
-              
-              {% if site.social.bandcamp %}
-              <a href="{{ site.social.bandcamp }}" class="link-item" target="_blank" rel="noopener">
-                <div class="link-icon">🎸</div>
-                <div class="link-info">
-                  <div class="link-title">Bandcamp</div>
-                  <div class="link-url">{{ site.social.bandcamp | replace("https://www.", "") | replace("https://", "") }}</div>
-                </div>
-              </a>
-              {% endif %}
-              
               {% if site.social.x %}
               <a href="{{ site.social.x }}" class="link-item" target="_blank" rel="noopener">
                 <div class="link-icon">
@@ -88,7 +58,6 @@
               {% endif %}
             </div>
           </div>
-          
         </div>
       </div>
     </div>
