@@ -5,85 +5,97 @@ let SONGS = [];
 // データの読み込み
 async function loadData() {
   try {
-    const timestamp = new Date().getTime(); // Generate a unique timestamp
+    const timestamp = new Date().getTime();
     
-    // GitHub Pages用のパスを動的に決定
-    const basePath = window.location.hostname === 'localhost' ? '' : '/parallelparadoxmusic';
+    // パスを動的に決定（より確実な方法）
+    let basePath = '';
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      // 本番環境の場合、現在のパスからベースパスを推測
+      const pathParts = window.location.pathname.split('/');
+      if (pathParts.length > 1 && pathParts[1] === 'parallelparadoxmusic') {
+        basePath = '/parallelparadoxmusic';
+      }
+    }
+    
     console.log('Base path determined:', basePath);
     console.log('Current URL:', window.location.href);
     
-    // 複数のパスを試行
-    const possiblePaths = [
+    // 最適化されたパス配列（最も可能性の高い順）
+    const playlistsPaths = [
       `${basePath}/playlists.json`,
-      `/playlists.json`,
-      `./playlists.json`,
-      `playlists.json`
+      '/playlists.json',
+      './playlists.json'
     ];
     
-    const possibleSongPaths = [
+    const songsPaths = [
       `${basePath}/songs.json`,
-      `/songs.json`,
-      `./songs.json`,
-      `songs.json`
+      '/songs.json',
+      './songs.json'
     ];
     
     let playlistsResponse, songsResponse;
     let playlistsUrl, songsUrl;
     
-    // プレイリストファイルのパスを試行
-    for (const path of possiblePaths) {
+    // プレイリストファイルのパスを試行（並列処理で高速化）
+    const playlistsPromises = playlistsPaths.map(async (path) => {
       try {
-        console.log('Trying playlists path:', path);
-        playlistsResponse = await fetch(`${path}?v=${timestamp}`);
-        if (playlistsResponse.ok) {
-          playlistsUrl = path;
-          console.log('Playlists found at:', path);
-          break;
+        const response = await fetch(`${path}?v=${timestamp}`);
+        if (response.ok) {
+          return { response, path };
         }
       } catch (e) {
-        console.log('Failed to load from:', path);
+        // エラーは無視
       }
-    }
+      return null;
+    });
     
-    // 楽曲ファイルのパスを試行
-    for (const path of possibleSongPaths) {
+    const songsPromises = songsPaths.map(async (path) => {
       try {
-        console.log('Trying songs path:', path);
-        songsResponse = await fetch(`${path}?v=${timestamp}`);
-        if (songsResponse.ok) {
-          songsUrl = path;
-          console.log('Songs found at:', path);
-          break;
+        const response = await fetch(`${path}?v=${timestamp}`);
+        if (response.ok) {
+          return { response, path };
         }
       } catch (e) {
-        console.log('Failed to load from:', path);
+        // エラーは無視
       }
+      return null;
+    });
+    
+    // 最初に成功した結果を取得
+    const playlistsResult = (await Promise.all(playlistsPromises)).find(result => result !== null);
+    const songsResult = (await Promise.all(songsPromises)).find(result => result !== null);
+    
+    if (!playlistsResult || !songsResult) {
+      throw new Error(`Failed to load JSON files. Playlists: ${playlistsResult ? 'OK' : 'FAIL'}, Songs: ${songsResult ? 'OK' : 'FAIL'}`);
     }
     
-    if (!playlistsResponse || !songsResponse || !playlistsResponse.ok || !songsResponse.ok) {
-      throw new Error(`Failed to load JSON files. Playlists: ${playlistsResponse?.status}, Songs: ${songsResponse?.status}`);
-    }
+    playlistsResponse = playlistsResult.response;
+    songsResponse = songsResult.response;
+    playlistsUrl = playlistsResult.path;
+    songsUrl = songsResult.path;
     
-    PLAYLISTS = await playlistsResponse.json();
-    SONGS = await songsResponse.json();
+    console.log('Playlists found at:', playlistsUrl);
+    console.log('Songs found at:', songsUrl);
     
-    console.log('データが読み込まれました:', { PLAYLISTS, SONGS });
+    // 並列でJSONを解析
+    const [playlistsData, songsData] = await Promise.all([
+      playlistsResponse.json(),
+      songsResponse.json()
+    ]);
+    
+    PLAYLISTS = playlistsData;
+    SONGS = songsData;
+    
+    console.log('データが読み込まれました:', { 
+      playlistsCount: PLAYLISTS.length, 
+      songsCount: SONGS.length 
+    });
+    
   } catch (error) {
     console.error('データの読み込みに失敗しました:', error);
-    // フォールバック: ローカルパスで再試行
-    try {
-      const [playlistsResponse, songsResponse] = await Promise.all([
-        fetch(`/playlists.json?v=${new Date().getTime()}`),
-        fetch(`/songs.json?v=${new Date().getTime()}`)
-      ]);
-      
-      PLAYLISTS = await playlistsResponse.json();
-      SONGS = await songsResponse.json();
-      
-      console.log('フォールバックでデータが読み込まれました:', { PLAYLISTS, SONGS });
-    } catch (fallbackError) {
-      console.error('フォールバックでもデータの読み込みに失敗しました:', fallbackError);
-    }
+    // エラー時は空の配列を設定して無限ループを防ぐ
+    PLAYLISTS = [];
+    SONGS = [];
   }
 }
 
@@ -119,11 +131,14 @@ function updatePlaylistDisplay() {
   // プレイリスト名オーバーレイを表示
   showPlaylistOverlay();
   
-  // プレイリスト切り替え時に自動再生（安全な方法で）
+  // プレイリスト切り替え時に現在の音楽を停止して新しいプレイリストを再生
   const currentPlaylistId = getCurrentPlaylistId();
   console.log('プレイリスト切り替え:', PLAYLISTS[currentPlaylistIndex]?.name, 'ID:', currentPlaylistId);
   
-  // データが正常に読み込まれている場合のみ自動再生
+  // 現在の音楽を停止
+  stopAudio();
+  
+  // 新しいプレイリストを自動再生
   if (PLAYLISTS.length > 0 && SONGS.length > 0 && typeof playRandomAudio === 'function' && !isAutoPlaying) {
     isAutoPlaying = true; // フラグを設定
     
@@ -131,7 +146,7 @@ function updatePlaylistDisplay() {
     setTimeout(() => {
       playRandomAudio(currentPlaylistId, PLAYLISTS[currentPlaylistIndex]?.name);
       isAutoPlaying = false; // フラグをリセット
-    }, 100);
+    }, 500); // 停止処理の完了を待つ
   }
 }
 
@@ -289,23 +304,6 @@ function closeAboutModal() {
   }
 }
 
-// Aboutモーダル関数
-function showAboutModal() {
-  const modal = document.getElementById('aboutModal');
-  if (modal) {
-    modal.style.display = 'block';
-    document.body.style.overflow = 'hidden'; // スクロールを無効化
-  }
-}
-
-function closeAboutModal() {
-  const modal = document.getElementById('aboutModal');
-  if (modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = 'auto'; // スクロールを有効化
-  }
-}
-
 // モーダル外をクリックした時に閉じる
 document.addEventListener('click', function(event) {
   const aboutModal = document.getElementById('aboutModal');
@@ -418,14 +416,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     console.log('PLAYLISTS length:', PLAYLISTS.length);
     console.log('SONGS length:', SONGS.length);
     
-    // 3秒後に再試行
+    // 1回だけ再試行（無限ループを防ぐ）
     setTimeout(async () => {
       console.log('データの再読み込みを試行します...');
       await loadData();
       if (PLAYLISTS.length > 0 && SONGS.length > 0) {
         initializePlaylistManager();
+      } else {
+        console.error('データの読み込みに最終的に失敗しました。手動でページをリロードしてください。');
       }
-    }, 3000);
+    }, 2000); // 2秒後に1回だけ再試行
     return;
   }
   
@@ -451,16 +451,8 @@ function initializePlaylistManager() {
     currentSongElement.textContent = '';
   }
   
-  // 初期化時に自動再生（安全な方法で）
-  if (PLAYLISTS.length > 0 && SONGS.length > 0 && typeof playRandomAudio === 'function' && !isAutoPlaying) {
-    isAutoPlaying = true;
-    setTimeout(() => {
-      const currentPlaylistId = getCurrentPlaylistId();
-      console.log('初期自動再生開始:', currentPlaylistId, PLAYLISTS[0].name);
-      playRandomAudio(currentPlaylistId, PLAYLISTS[0].name);
-      isAutoPlaying = false;
-    }, 500); // 初期化時は少し長めの遅延
-  }
+  // 初期化時は自動再生しない（ユーザーが手動で再生ボタンを押すまで待機）
+  console.log('プレイリストマネージャーが初期化されました。手動で再生ボタンを押してください。');
 }
 
 // 現在のプレイリストから再生
@@ -518,6 +510,12 @@ function playRandomAudio(playlistId, title) {
     hiddenPlayer.style.pointerEvents = 'none';
     hiddenPlayer.allow = 'autoplay; encrypted-media';
     document.body.appendChild(hiddenPlayer);
+  } else {
+    // 既存のプレイヤーがある場合、古いタイマーをクリア
+    if (hiddenPlayer._nextSongTimer) {
+      clearTimeout(hiddenPlayer._nextSongTimer);
+      hiddenPlayer._nextSongTimer = null;
+    }
   }
 
     // 従来のiframe方式で再生（音声が出ていた方式）
@@ -528,20 +526,23 @@ function playRandomAudio(playlistId, title) {
   
   // iframe方式で曲終了を検知（タイマーで監視）
   const videoDuration = 180; // 平均的な曲の長さ（秒）
-  setTimeout(() => {
+  const nextSongTimer = setTimeout(() => {
     console.log('タイマーによる曲終了検知。次の曲を再生します。');
     const currentPlaylistId = getCurrentPlaylistId();
     const currentPlaylistName = PLAYLISTS[currentPlaylistIndex].name;
     playRandomAudio(currentPlaylistId, currentPlaylistName);
   }, (videoDuration + 5) * 1000); // 5秒の余裕を持たせる
-
-  // 背景を更新
-  updateBackgroundThumbnail(randomVideo.id, randomVideo.thumbnail);
+  
+  // タイマーを隠しプレイヤーに保存（停止時にクリアできるように）
+  hiddenPlayer._nextSongTimer = nextSongTimer;
 
   console.log('音声再生開始:', randomVideo.title);
   
   // 曲名を更新
   updateCurrentSong(randomVideo.title);
+  
+  // 背景を更新（即座に実行）
+  updateBackgroundThumbnail(randomVideo.id, randomVideo.thumbnail);
   
   // プレイヤーの読み込み完了を監視
   hiddenPlayer.onload = function() {
@@ -578,8 +579,23 @@ function updateCurrentSong(songTitle) {
 function stopAudio() {
   const hiddenPlayer = document.getElementById('hidden-audio-player');
   if (hiddenPlayer) {
+    // タイマーをクリア
+    if (hiddenPlayer._nextSongTimer) {
+      clearTimeout(hiddenPlayer._nextSongTimer);
+      hiddenPlayer._nextSongTimer = null;
+    }
+    
+    // iframeのsrcを空にして音楽を停止
     hiddenPlayer.src = '';
+    hiddenPlayer.src = 'about:blank'; // より確実に停止
+    
     console.log('音声停止');
+  }
+  
+  // 曲名表示をクリア
+  const currentSongElement = document.getElementById('current-song');
+  if (currentSongElement) {
+    currentSongElement.textContent = '';
   }
   
   // 背景もリセット
@@ -588,22 +604,43 @@ function stopAudio() {
 
 // 背景を動画サムネイルに更新
 function updateBackgroundThumbnail(videoId, thumbnailUrl) {
-  // 背景要素を作成または更新
-  let backgroundElement = document.getElementById('dynamic-background');
-  if (!backgroundElement) {
-    backgroundElement = document.createElement('div');
-    backgroundElement.id = 'dynamic-background';
-    backgroundElement.className = 'dynamic-background';
-    document.body.appendChild(backgroundElement);
+  console.log('背景更新開始:', videoId, thumbnailUrl);
+  
+  // 既存の背景要素を削除
+  const existingBackground = document.getElementById('dynamic-background');
+  if (existingBackground) {
+    existingBackground.remove();
+    console.log('既存の背景要素を削除しました');
   }
+  
+  // 新しい背景要素を作成
+  const backgroundElement = document.createElement('div');
+  backgroundElement.id = 'dynamic-background';
+  backgroundElement.className = 'dynamic-background';
   
   // 背景画像を設定
   backgroundElement.style.backgroundImage = `url(${thumbnailUrl})`;
+  backgroundElement.style.backgroundSize = 'cover';
+  backgroundElement.style.backgroundPosition = 'center';
+  backgroundElement.style.backgroundRepeat = 'no-repeat';
+  backgroundElement.style.opacity = '0';
+  
+  // bodyに追加
+  document.body.appendChild(backgroundElement);
+  document.body.classList.add('has-dynamic-background');
+  
+  console.log('新しい背景要素を作成しました');
   
   // フェードイン効果
-  backgroundElement.style.opacity = '0';
   setTimeout(() => {
     backgroundElement.style.opacity = '1';
+    console.log('背景更新完了:', videoId);
+    console.log('背景要素の状態:', {
+      element: backgroundElement,
+      backgroundImage: backgroundElement.style.backgroundImage,
+      opacity: backgroundElement.style.opacity,
+      display: backgroundElement.style.display
+    });
   }, 100);
 }
 
@@ -614,12 +651,21 @@ function resetBackground() {
     backgroundElement.style.opacity = '0';
     setTimeout(() => {
       backgroundElement.remove();
+      // bodyクラスも削除
+      document.body.classList.remove('has-dynamic-background');
     }, 500);
   }
 
   // 隠しプレイヤーも停止
   const hiddenPlayer = document.getElementById('hidden-audio-player');
   if (hiddenPlayer) {
+    // タイマーをクリア
+    if (hiddenPlayer._nextSongTimer) {
+      clearTimeout(hiddenPlayer._nextSongTimer);
+      hiddenPlayer._nextSongTimer = null;
+    }
+    // より確実に停止
     hiddenPlayer.src = '';
+    hiddenPlayer.src = 'about:blank';
   }
 }
