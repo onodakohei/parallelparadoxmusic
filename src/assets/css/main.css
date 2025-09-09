@@ -683,6 +683,15 @@ body.has-dynamic-background .container {
   justify-content: center;
 }
 
+.icon-placeholder {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+}
+
 .logo-icon {
   width: 2rem;
   height: 2rem;
